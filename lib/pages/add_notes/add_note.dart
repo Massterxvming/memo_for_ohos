@@ -1,35 +1,71 @@
+import 'dart:math';
+
 import '../../common/common.dart';
+import 'dart:convert';
+import '../../storage_service/stoage_service.dart';
 
 class AddNoteLogic extends GetxController {
   static AddNoteLogic? get logic => DependencyTool.capture(Get.find);
-
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-    // TODO: implement onReady
-  }
-
-  @override
-  void onClose() {
-    // TODO: implement onClose
-    super.onClose();
-  }
 }
 
-class AddNotePage extends StatelessWidget {
+class AddNotePage extends StatefulWidget {
   const AddNotePage({super.key});
 
   @override
+  State<AddNotePage> createState() => _AddNotePageState();
+}
+
+class _AddNotePageState extends State<AddNotePage> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _contentController;
+  late final FocusNode _contentFocusNode;
+  String? _editingId;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController();
+    _contentController = TextEditingController();
+    _contentFocusNode = FocusNode();
+
+    final arg = Get.arguments;
+    if (arg != null) {
+      try {
+        Map<String, dynamic>? map;
+        if (arg is String && arg.isNotEmpty) {
+          map = json.decode(arg) as Map<String, dynamic>;
+        } else if (arg is Map<String, dynamic>) {
+          map = arg;
+        }
+        if (map != null) {
+          final NoteItem item = NoteItem.fromJson(map);
+          _editingId = item.id;
+          _titleController.text = item.title;
+          _contentController.text = item.content;
+        }
+      } catch (_) {
+        // ignore malformed argument
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _contentController.dispose();
+    _contentFocusNode.dispose();
+    super.dispose();
+  }
+
+  String _generateUuid() {
+    final int micros = DateTime.now().microsecondsSinceEpoch;
+    final int rand = Random().nextInt(0x7fffffff);
+    return '${micros.toRadixString(16)}-${rand.toRadixString(16)}';
+  }
+
+  @override
   Widget build(BuildContext context) {
-    AddNoteLogic logic = Get.put(AddNoteLogic());
-    final TextEditingController _controller = TextEditingController();
-    final FocusNode _focusNode = FocusNode();
+    Get.put(AddNoteLogic());
 
     return Scaffold(
       appBar: AppBar(
@@ -38,8 +74,19 @@ class AddNotePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: () {
-              // 保存逻辑
-              // 例如：logic.saveNote(_controller.text);
+              _editingId ??= _generateUuid();
+              final NoteItem updated = NoteItem(
+                id: _editingId,
+                title: _titleController.text,
+                content: _contentController.text,
+              );
+              StorageService.instance.replaceNoteItemById(updated).then((ok) {
+                if (ok) {
+                  Get.back(result: true);
+                } else {
+                  Get.snackbar('未找到', '未找到对应的笔记');
+                }
+              });
             },
           ),
         ],
@@ -47,21 +94,35 @@ class AddNotePage extends StatelessWidget {
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          _focusNode.requestFocus();
+          _contentFocusNode.requestFocus();
         },
         child: Container(
           height: double.infinity,
           padding: const EdgeInsets.all(16.0),
-          child: Expanded(
-            child: TextField(
-              controller: _controller,
-              focusNode: _focusNode,
-              maxLines: null,
-              decoration: const InputDecoration(
-                hintText: '请输入笔记内容',
-                border: InputBorder.none,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  hintText: '请输入标题',
+                  border: InputBorder.none,
+                ),
               ),
-            ),
+              const Divider(height: 1),
+              const SizedBox(height: 8),
+              Expanded(
+                child: TextField(
+                  controller: _contentController,
+                  focusNode: _contentFocusNode,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    hintText: '请输入笔记内容',
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

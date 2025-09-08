@@ -1,25 +1,39 @@
-
 import 'package:memo_for_ohos/common/common.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingInfoLogic extends GetxController {
   static SettingInfoLogic? get logic => DependencyTool.capture(Get.find);
 
+  String appName = '';
+  String version = '';
+  String buildNumber = '';
+  String packageName = '';
+
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
+    _loadPackageInfo();
   }
 
   @override
   void onReady() {
     super.onReady();
-    // TODO: implement onReady
   }
 
   @override
   void onClose() {
-    // TODO: implement onClose
     super.onClose();
+  }
+
+  Future<void> _loadPackageInfo() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      appName = info.appName;
+      version = info.version;
+      buildNumber = info.buildNumber;
+      packageName = info.packageName;
+      update();
+    } catch (_) {}
   }
 }
 
@@ -28,37 +42,46 @@ class SettingInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SettingInfoLogic logic = Get.put(SettingInfoLogic());
+    Get.put(SettingInfoLogic());
     return Scaffold(
       appBar: AppBar(
-        title: const Text('设置',),
+        title: const Text(
+          '设置',
+        ),
         leading: const BackButton(),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          ListTile(
-            title: const Text('关于'),
-            subtitle: const Text('查看应用信息'),
-            leading: const Icon(Icons.info_outline),
-            onTap: () {
-              // TODO: 跳转到关于页面
-            },
-          ),
-          const Divider(),
-          ListTile(
-            title: const Text('主题设置'),
-            subtitle: const Text('切换浅色/深色模式'),
-            leading: const Icon(Icons.color_lens_outlined),
-            trailing: Switch(
-              value: false, // TODO: 替换为实际主题状态
-              onChanged: (value) {
-                // TODO: 切换主题
-              },
+      body: GetBuilder<SettingInfoLogic>(builder: (logic) {
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            ListTile(
+              title: const Text('关于'),
+              subtitle: Text(
+                  '${logic.appName}  v${logic.version}+${logic.buildNumber}\n${logic.packageName}'),
+              leading: const Icon(Icons.info_outline),
+              onTap: () {},
             ),
-          ),
-        ],
-      ),
+            const Divider(),
+            ListTile(
+              title: const Text('主题设置'),
+              subtitle: const Text('切换浅色/深色模式'),
+              leading: const Icon(Icons.color_lens_outlined),
+              trailing: GetBuilder<ThemeStore>(
+                builder: (store) {
+                  final bool isDark = store.themeMode == ThemeMode.dark;
+                  return Switch(
+                    value: isDark,
+                    onChanged: (value) {
+                      store.setThemeMode(
+                          value ? ThemeMode.dark : ThemeMode.light);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 }

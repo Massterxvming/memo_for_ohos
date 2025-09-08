@@ -1,28 +1,39 @@
 import 'package:memo_for_ohos/pages/setting/setting_info.dart';
+import 'package:memo_for_ohos/tools/time_util.dart';
 
 import '../common/common.dart';
 import 'add_notes/add_notes.dart';
+import '../storage_service/stoage_service.dart';
 
 class LaunchLogic extends GetxController {
   static LaunchLogic? get logic => DependencyTool.capture(Get.find);
 
+  List<NoteListModel> noteList = [];
+
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
+    _loadFromCache();
   }
 
   @override
   void onReady() {
     super.onReady();
-    // TODO: implement onReady
   }
 
   @override
   void onClose() {
-    // TODO: implement onClose
     super.onClose();
   }
+
+  Future<void> _loadFromCache() async {
+    final List<NoteListModel> list =
+        await StorageService.instance.readNoteList();
+    noteList = list;
+    update();
+  }
+
+  Future<void> reloadFromCache() => _loadFromCache();
 }
 
 class LaunchPage extends StatelessWidget {
@@ -30,6 +41,7 @@ class LaunchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(LaunchLogic());
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -62,45 +74,137 @@ class LaunchPage extends StatelessWidget {
           ],
         ),
       ),
-      body: ListView.builder(
-        itemCount: 5, // 外层流水线分组
-        itemBuilder: (context, groupIndex) {
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            elevation: 2,
-            child: ExpansionTile(
-              leading: const Icon(Icons.timeline, color: Colors.green),
-              title: Text(
-                '流水线分组 $groupIndex',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+      body: GetBuilder<LaunchLogic>(builder: (logic) {
+        return ListView.builder(
+          reverse: true,
+          shrinkWrap: true,
+          itemCount: logic.noteList.length,
+          itemBuilder: (context, groupIndex) {
+            final group = logic.noteList[groupIndex];
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              elevation: 2,
+              child: ExpansionTile(
+                leading: const Icon(Icons.timeline, color: Colors.green),
+                title: Text(
+                  TimeUtil.formatTimeStamp(group.publishDate),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                children: List.generate(group.itemList.length, (noteIndex) {
+                  final item = group.itemList[noteIndex];
+                  return ListTile(
+                    leading: const Icon(
+                      Icons.note,
+                      color: Colors.blueAccent,
+                    ),
+                    title: Text(
+                      item.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      item.content,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    // trailing: Chip(
+                    //   label: Text(
+                    //     '步骤${noteIndex + 1}',
+                    //     style: const TextStyle(fontSize: 10),
+                    //   ),
+                    //   backgroundColor: Colors.yellow.shade50,
+                    // ),
+                    onTap: () async {
+                      final result = await Get.to(
+                        const AddNotePage(),
+                        arguments: item.toJson(),
+                      );
+                      if (result == true) {
+                        await LaunchLogic.logic?.reloadFromCache();
+                      }
+                    },
+                    onLongPress: () async {
+                      _showDeleteBottomSheetForItem(context, item.id);
+                    },
+                  );
+                }),
               ),
-              children: List.generate(3, (noteIndex) {
-                return ListTile(
-                  leading: const Icon(Icons.note, color: Colors.blueAccent),
-                  title: Text('笔记标题 $groupIndex-$noteIndex'),
-                  subtitle: const Text('这里是笔记内容摘要...'),
-                  trailing: Chip(
-                    label: Text('步骤${noteIndex + 1}',
-                        style: const TextStyle(fontSize: 10)),
-                    backgroundColor: Colors.yellow.shade50,
-                  ),
-                  onTap: () {
-                    // 跳转到详情页
-                  },
-                );
-              }),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.yellow.shade50,
         foregroundColor: Colors.amber,
-        onPressed: () {
-          Get.to(const AddNotePage());
+        onPressed: () async {
+          final result = await Get.to(const AddNotePage());
+          if (result == true) {
+            await LaunchLogic.logic?.reloadFromCache();
+          }
         },
         child: const Icon(Icons.add),
       ),
     );
   }
+}
+
+void _showDeleteBottomSheetForGroup(BuildContext context, int publishDate) {
+  showModalBottomSheet(
+    context: context,
+    builder: (ctx) {
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.redAccent),
+              title: const Text('删除分组及其所有笔记'),
+              onTap: () async {
+                await StorageService.instance
+                    .deleteNoteListByPublishDate(publishDate);
+                Navigator.of(ctx).pop();
+                await LaunchLogic.logic?.reloadFromCache();
+              },
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.close),
+              title: const Text('取消'),
+              onTap: () => Navigator.of(ctx).pop(),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void _showDeleteBottomSheetForItem(BuildContext context, String id) {
+  showModalBottomSheet(
+    context: context,
+    builder: (ctx) {
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.redAccent),
+              title: const Text('删除该笔记'),
+              onTap: () async {
+                await StorageService.instance.deleteNoteItemById(id);
+                Navigator.of(ctx).pop();
+                await LaunchLogic.logic?.reloadFromCache();
+              },
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.close),
+              title: const Text('取消'),
+              onTap: () => Navigator.of(ctx).pop(),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }

@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 const double getToolbarHeight = 48;
@@ -159,6 +157,65 @@ class DesignTool {
       ),
       textSelectionTheme: const TextSelectionThemeData(
         cursorColor: getTextPrimaryColor,
+      ),
+    );
+  }
+
+  static ThemeData darkTheme() {
+    TextStyle textStyle = const TextStyle(
+      color: Colors.white,
+      fontWeight: getRegular,
+    );
+    return ThemeData.from(
+      colorScheme: const ColorScheme.dark(
+        primary: getPrimaryColor,
+        secondary: getSecondaryColor,
+        error: getErrorColor,
+        surface: Color(0xFF121212),
+        onSurface: Colors.white,
+      ),
+      textTheme: TextTheme(
+        titleLarge: textStyle.copyWith(fontSize: 20),
+        titleMedium: textStyle.copyWith(fontSize: 16),
+        titleSmall: textStyle.copyWith(fontSize: 14),
+        bodyLarge: textStyle.copyWith(fontSize: 16),
+        bodyMedium: textStyle.copyWith(fontSize: 14),
+        bodySmall: textStyle.copyWith(fontSize: 12),
+        labelLarge: textStyle.copyWith(fontSize: 14),
+        labelMedium: textStyle.copyWith(fontSize: 12),
+        labelSmall: textStyle.copyWith(fontSize: 10),
+      ),
+    ).copyWith(
+      highlightColor: Colors.transparent,
+      appBarTheme: AppBarTheme(
+        backgroundColor: const Color(0xFF121212),
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        shadowColor: Colors.black,
+        surfaceTintColor: const Color(0xFF121212),
+        centerTitle: true,
+        toolbarHeight: getToolbarHeight,
+        titleTextStyle: textStyle.copyWith(
+          fontSize: 18,
+          fontWeight: getBold,
+        ),
+      ),
+      dividerTheme: const DividerThemeData(
+        color: Color(0xFF2C2C2C),
+        space: 1,
+        thickness: 1,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        hintStyle: textStyle.copyWith(
+          color: Colors.white70,
+          fontSize: 14,
+        ),
+        isCollapsed: true,
+        contentPadding: const EdgeInsets.all(16),
+        border: InputBorder.none,
+      ),
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: Colors.white,
       ),
     );
   }
