@@ -2,15 +2,15 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "module description"
+      "value": "This is a simple and efficient note-taking app."
     },
     {
       "name": "EntryAbility_desc",
-      "value": "description"
+      "value": "Used for displaying note list and management functions"
     },
     {
       "name": "EntryAbility_label",
-      "value": "memo_for_ohos"
+      "value": "memo"
     }
   ]
 }

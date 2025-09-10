@@ -2,11 +2,11 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "module description"
+      "value": "这是一个简洁高效的记事本应用"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "description"
+      "value": "用于显示笔记列表和管理功能"
     },
     {
       "name": "EntryAbility_label",
