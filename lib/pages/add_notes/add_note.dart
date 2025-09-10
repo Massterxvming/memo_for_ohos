@@ -91,7 +91,7 @@ class _AddNotePageState extends State<AddNotePage> {
       floatingActionButton: FloatingActionButton(
         //帮我写
         onPressed: () async {_deepSeekTopic(_contentController.text);},
-        child: isLoading?SizedBox(
+        child: isLoading?const SizedBox(
           width: 24,
           height: 24,
           child: CircularProgressIndicator(
