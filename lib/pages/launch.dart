@@ -76,6 +76,7 @@ class LaunchPage extends StatelessWidget {
       ),
       body: GetBuilder<LaunchLogic>(builder: (logic) {
         return ListView.builder(
+          physics: const ClampingScrollPhysics(),
           reverse: true,
           shrinkWrap: true,
           itemCount: logic.noteList.length,
@@ -134,8 +135,8 @@ class LaunchPage extends StatelessWidget {
         );
       }),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.yellow.shade50,
-        foregroundColor: Colors.amber,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).secondaryHeaderColor,
         onPressed: () async {
           final result = await Get.to(const AddNotePage());
           if (result == true) {

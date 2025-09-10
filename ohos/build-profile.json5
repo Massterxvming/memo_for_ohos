@@ -1,19 +1,6 @@
 {
   "app": {
     "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "certpath": "/Users/gatsby/.ohos/config/default_ohos_iQazAyALqtyi_o4bVZRuSvOXDgY7FifLu9RWzk2R-pU=.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001B807BCC70E8BCBBC3D678529F79A2D589234FE19C51A0EB08568F341F9143989BEB99E9274E5FBB",
-          "profile": "/Users/gatsby/.ohos/config/default_ohos_iQazAyALqtyi_o4bVZRuSvOXDgY7FifLu9RWzk2R-pU=.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/gatsby/.ohos/config/default_ohos_iQazAyALqtyi_o4bVZRuSvOXDgY7FifLu9RWzk2R-pU=.p12",
-          "storePassword": "0000001BA2283A0030237143B8DA816B8016CC8EB74DDBA4170464606CA1B2BF5C871A35332A40A15C63FB"
-        }
-      }
     ],
     "products": [
       {

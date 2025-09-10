@@ -57,7 +57,7 @@ class SettingInfoPage extends StatelessWidget {
             ListTile(
               title: const Text('关于'),
               subtitle: Text(
-                  '${logic.appName}  v${logic.version}+${logic.buildNumber}\n${logic.packageName}'),
+                  '${logic.appName}  v${logic.version}'),
               leading: const Icon(Icons.info_outline),
               onTap: () {},
             ),
