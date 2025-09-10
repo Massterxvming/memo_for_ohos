@@ -1,6 +1,19 @@
 {
   "app": {
     "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "storeFile": "./entry/key/release/release.p12",
+          "storePassword": "0000001AD89943DBFFF41D4AD69C7EBB690A24A65FD7A7B2D985165A9F2F82D19BD283D3C9958EB77EDD",
+          "keyAlias": "release",
+          "keyPassword": "0000001A10EB11AF75FF61F053900D7ADC51A4AD97BB98DF2DDB2D124606EDB5E66DB1EE645A64664609",
+          "signAlg": "SHA256withECDSA",
+          "profile": "./entry/key/release/release.csr",
+          "certpath": "./entry/key/release/release.cer"
+        }
+      }
     ],
     "products": [
       {
