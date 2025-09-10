@@ -20,6 +20,9 @@ class _AddNotePageState extends State<AddNotePage> {
   late final FocusNode _contentFocusNode;
   String? _editingId;
 
+  bool isLoading = false;
+
+
   @override
   void initState() {
     super.initState();
@@ -63,22 +66,40 @@ class _AddNotePageState extends State<AddNotePage> {
   }
 
   //获得提示内容
-  Future<String> _deepSeekTopic(String content) async {
+  Future<void> _deepSeekTopic(String content) async {
+    isLoading = true;
+    setState(() {});
+
     final response = await deepSeekClient.createChatCompletion(
       ChatCompletionRequest(
         model: 'deepseek-chat',
-        messages: [ChatMessage(role: 'user', content: content,),],
+        messages: [ChatMessage(role: 'user', content: "请你帮我续写一下日记：$content",),],
         temperature: 0.7,
         maxTokens: 100,
+        // stream: true,
       ),
     );
-    return response.choices.first.message.content;
+    _contentController.text=response.choices.first.message.content;
+    isLoading = false;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        //帮我写
+        onPressed: () async {_deepSeekTopic(_contentController.text);},
+        child: isLoading?SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        ):const Icon(Icons.rocket_launch,color: Colors.white,size: 24,),
+      ),
       appBar: AppBar(
         title: const Text('添加笔记'),
         actions: [
