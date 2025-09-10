@@ -1,4 +1,5 @@
 import 'package:memo_for_ohos/common/common.dart';
+import 'package:memo_for_ohos/pages/setting/privacy_policy.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingInfoLogic extends GetxController {
@@ -60,6 +61,15 @@ class SettingInfoPage extends StatelessWidget {
                   '${logic.appName}  v${logic.version}'),
               leading: const Icon(Icons.info_outline),
               onTap: () {},
+            ),
+            ListTile(
+              title: const Text('隐私政策'),
+              subtitle: Text(
+                  '${logic.appName}  v${logic.version}'),
+              leading: const Icon(Icons.privacy_tip_outlined),
+              onTap: () {
+                Get.to(const PrivacyPolicyPage());
+              },
             ),
             const Divider(),
             ListTile(

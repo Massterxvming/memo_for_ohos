@@ -1,12 +1,11 @@
 import 'dart:math';
 
+import 'package:deepseek_api/deepseek_api.dart';
+import 'package:memo_for_ohos/deepseek_client/deepseek_client.dart';
+
 import '../../common/common.dart';
 import 'dart:convert';
 import '../../storage_service/stoage_service.dart';
-
-class AddNoteLogic extends GetxController {
-  static AddNoteLogic? get logic => DependencyTool.capture(Get.find);
-}
 
 class AddNotePage extends StatefulWidget {
   const AddNotePage({super.key});
@@ -63,9 +62,21 @@ class _AddNotePageState extends State<AddNotePage> {
     return '${micros.toRadixString(16)}-${rand.toRadixString(16)}';
   }
 
+  //获得提示内容
+  Future<String> _deepSeekTopic(String content) async {
+    final response = await deepSeekClient.createChatCompletion(
+      ChatCompletionRequest(
+        model: 'deepseek-chat',
+        messages: [ChatMessage(role: 'user', content: content,),],
+        temperature: 0.7,
+        maxTokens: 100,
+      ),
+    );
+    return response.choices.first.message.content;
+  }
+
   @override
   Widget build(BuildContext context) {
-    Get.put(AddNoteLogic());
 
     return Scaffold(
       appBar: AppBar(
@@ -120,6 +131,9 @@ class _AddNotePageState extends State<AddNotePage> {
                     hintText: '请输入笔记内容',
                     border: InputBorder.none,
                   ),
+                  onChanged: (v){
+
+                  },
                 ),
               ),
             ],
