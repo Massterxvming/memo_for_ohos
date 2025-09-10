@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       child: GetBuilder<ThemeStore>(builder: (store) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: true,
-          title: "记事本",
+          title: "光阴手账",
           theme: DesignTool.theme(),
           darkTheme: DesignTool.darkTheme(),
           themeMode: store.themeMode,

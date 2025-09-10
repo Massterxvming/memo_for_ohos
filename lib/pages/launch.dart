@@ -49,7 +49,7 @@ class LaunchPage extends StatelessWidget {
             const Icon(Icons.book, color: Colors.blueAccent),
             const SizedBox(width: 8),
             const Text(
-              '记事本',
+              '光阴手账',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const Spacer(),
