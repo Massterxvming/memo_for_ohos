@@ -46,7 +46,7 @@ class PrivacyPolicyPage extends StatelessWidget {
 
             _sectionTitle("七、联系我们"),
             Text("如您对本隐私政策有任何疑问或建议，请通过以下方式联系我们：\n"
-                "📧 邮箱：your_email@example.com\n"),
+                "📧 邮箱：gatsbycc0@gmail.com\n"),
           ],
         ),
       ),
