@@ -71,6 +71,7 @@ class _AddNotePageState extends State<AddNotePage> {
     setState(() {});
 
     final response = await deepSeekClient.createChatCompletion(
+
       ChatCompletionRequest(
         model: 'deepseek-chat',
         messages: [ChatMessage(role: 'user', content: "请你帮我续写一下日记：$content",),],
@@ -84,13 +85,57 @@ class _AddNotePageState extends State<AddNotePage> {
     setState(() {});
   }
 
+  Future<void> continueDiary(String content) async {
+    final response = deepSeekClient.createChatCompletion(
+      ChatCompletionRequest(
+        model: 'deepseek-chat',
+        messages: [
+          ChatMessage(
+            role: 'user',
+            content: "请你以日记的语气帮我续写以下内容：$content",
+          ),
+        ],
+        temperature: 0.7,
+        maxTokens: 100,
+        stream: true,
+      ),
+    ).then((v){
+      debugPrint('--->_AddNotePageState.continueDiary:${v}');
+    });
+
+    // 处理流式响应
+    // response.stream.listen(
+    //       (ChatCompletionResponse chunk) {
+    //     if (chunk.choices.isNotEmpty) {
+    //       final newContent = chunk.choices.first.delta?.content;
+    //       if (newContent != null && newContent.isNotEmpty) {
+    //         setState(() {
+    //           _contentController.text += newContent;
+    //         });
+    //       }
+    //     }
+    //   },
+    //   onError: (error) {
+    //     // 处理错误
+    //     print('Error: $error');
+    //   },
+    //   onDone: () {
+    //     // 可选的完成处理
+    //     print('Stream completed');
+    //   },
+    // );
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         //帮我写
-        onPressed: () async {_deepSeekTopic(_contentController.text);},
+        onPressed: () async {
+          // continueDiary(_contentController.text);
+          _deepSeekTopic(_contentController.text);
+          },
         child: isLoading?const SizedBox(
           width: 24,
           height: 24,
