@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:deepseek_api/deepseek_api.dart';
+// import 'package:deepseek_api/deepseek_api.dart';
 import 'package:memo_for_ohos/deepseek_client/deepseek_client.dart';
 
 import '../../common/common.dart';
@@ -66,85 +66,85 @@ class _AddNotePageState extends State<AddNotePage> {
   }
 
   //获得提示内容
-  Future<void> _deepSeekTopic(String content) async {
-    isLoading = true;
-    setState(() {});
-
-    final response = await deepSeekClient.createChatCompletion(
-
-      ChatCompletionRequest(
-        model: 'deepseek-chat',
-        messages: [ChatMessage(role: 'user', content: "请你帮我续写一下日记：$content",),],
-        temperature: 0.7,
-        maxTokens: 100,
-        // stream: true,
-      ),
-    );
-    _contentController.text=response.choices.first.message.content;
-    isLoading = false;
-    setState(() {});
-  }
-
-  Future<void> continueDiary(String content) async {
-    final response = deepSeekClient.createChatCompletion(
-      ChatCompletionRequest(
-        model: 'deepseek-chat',
-        messages: [
-          ChatMessage(
-            role: 'user',
-            content: "请你以日记的语气帮我续写以下内容：$content",
-          ),
-        ],
-        temperature: 0.7,
-        maxTokens: 100,
-        stream: true,
-      ),
-    ).then((v){
-      debugPrint('--->_AddNotePageState.continueDiary:${v}');
-    });
-
-    // 处理流式响应
-    // response.stream.listen(
-    //       (ChatCompletionResponse chunk) {
-    //     if (chunk.choices.isNotEmpty) {
-    //       final newContent = chunk.choices.first.delta?.content;
-    //       if (newContent != null && newContent.isNotEmpty) {
-    //         setState(() {
-    //           _contentController.text += newContent;
-    //         });
-    //       }
-    //     }
-    //   },
-    //   onError: (error) {
-    //     // 处理错误
-    //     print('Error: $error');
-    //   },
-    //   onDone: () {
-    //     // 可选的完成处理
-    //     print('Stream completed');
-    //   },
-    // );
-  }
+  // Future<void> _deepSeekTopic(String content) async {
+  //   isLoading = true;
+  //   setState(() {});
+  //
+  //   final response = await deepSeekClient.createChatCompletion(
+  //
+  //     ChatCompletionRequest(
+  //       model: 'deepseek-chat',
+  //       messages: [ChatMessage(role: 'user', content: "请你帮我续写一下日记：$content",),],
+  //       temperature: 0.7,
+  //       maxTokens: 100,
+  //       // stream: true,
+  //     ),
+  //   );
+  //   _contentController.text=response.choices.first.message.content;
+  //   isLoading = false;
+  //   setState(() {});
+  // }
+  //
+  // Future<void> continueDiary(String content) async {
+  //   final response = deepSeekClient.createChatCompletion(
+  //     ChatCompletionRequest(
+  //       model: 'deepseek-chat',
+  //       messages: [
+  //         ChatMessage(
+  //           role: 'user',
+  //           content: "请你以日记的语气帮我续写以下内容：$content",
+  //         ),
+  //       ],
+  //       temperature: 0.7,
+  //       maxTokens: 100,
+  //       stream: true,
+  //     ),
+  //   ).then((v){
+  //     debugPrint('--->_AddNotePageState.continueDiary:${v}');
+  //   });
+  //
+  //   // 处理流式响应
+  //   // response.stream.listen(
+  //   //       (ChatCompletionResponse chunk) {
+  //   //     if (chunk.choices.isNotEmpty) {
+  //   //       final newContent = chunk.choices.first.delta?.content;
+  //   //       if (newContent != null && newContent.isNotEmpty) {
+  //   //         setState(() {
+  //   //           _contentController.text += newContent;
+  //   //         });
+  //   //       }
+  //   //     }
+  //   //   },
+  //   //   onError: (error) {
+  //   //     // 处理错误
+  //   //     print('Error: $error');
+  //   //   },
+  //   //   onDone: () {
+  //   //     // 可选的完成处理
+  //   //     print('Stream completed');
+  //   //   },
+  //   // );
+  // }
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        //帮我写
-        onPressed: () async {
-          // continueDiary(_contentController.text);
-          _deepSeekTopic(_contentController.text);
-          },
-        child: isLoading?const SizedBox(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-          ),
-        ):const Icon(Icons.rocket_launch,color: Colors.white,size: 24,),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   //帮我写
+      //   onPressed: () async {
+      //     // continueDiary(_contentController.text);
+      //     _deepSeekTopic(_contentController.text);
+      //     },
+      //   child: isLoading?const SizedBox(
+      //     width: 24,
+      //     height: 24,
+      //     child: CircularProgressIndicator(
+      //       strokeWidth: 2,
+      //       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      //     ),
+      //   ):const Icon(Icons.rocket_launch,color: Colors.white,size: 24,),
+      // ),
       appBar: AppBar(
         title: const Text('添加笔记'),
         actions: [
