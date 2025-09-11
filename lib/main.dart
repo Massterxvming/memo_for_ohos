@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
     return RefreshConfiguration(
       child: GetBuilder<ThemeStore>(builder: (store) {
         return GetMaterialApp(
-          debugShowCheckedModeBanner: true,
           title: "光阴手账",
           theme: DesignTool.theme(),
           darkTheme: DesignTool.darkTheme(),
