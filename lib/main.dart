@@ -8,7 +8,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageService.instance.init();
   Get.put(ThemeStore());
-  await ThemeStore.logic?.init();
+  ThemeStore.logic?.init();
   runApp(const MyApp());
 }
 
@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return RefreshConfiguration(
       child: GetBuilder<ThemeStore>(builder: (store) {
         return GetMaterialApp(

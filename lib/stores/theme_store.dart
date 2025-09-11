@@ -19,7 +19,7 @@ class ThemeStore extends GetxController {
 
   Future<void> setThemeMode(ThemeMode mode) async {
     _themeMode = mode;
-    await StorageService.instance.writeString(_themeKey, _stringify(mode));
+    // await StorageService.instance.writeString(_themeKey, _stringify(mode));
     update();
   }
 

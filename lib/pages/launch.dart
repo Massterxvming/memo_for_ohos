@@ -13,7 +13,7 @@ class LaunchLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadFromCache();
+    // _loadFromCache();
   }
 
   @override

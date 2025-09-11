@@ -37,10 +37,16 @@ dependencies:
   pull_to_refresh: 2.0.0
   get: 4.7.2
 #  flutter_quill: ^11.4.2
-  get_storage: ^2.1.1
-  skeletonizer: ^1.4.3
+#  get_storage: ^2.1.1
+  hive: 2.2.3
+  path_provider:
+    git:
+      url: "https://gitcode.com/openharmony-tpc/flutter_packages.git"
+      path: "packages/path_provider/path_provider"
+      ref: "br_path_provider-v2.1.4_ohos"
+#  skeletonizer: ^1.4.3
 #  deepseek_api: ^0.1.2
-  package_info_plus: ^8.0.0
+#  package_info_plus: ^8.0.0
 
 dependency_overrides:
   package_info_plus:

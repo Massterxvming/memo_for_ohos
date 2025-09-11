@@ -1,5 +1,7 @@
-import 'package:get_storage/get_storage.dart';
 import 'dart:convert';
+
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../common/common.dart';
 
@@ -13,12 +15,13 @@ class StorageService {
 
   static StorageService get instance => _instance;
 
-  final _box = GetStorage();
+  late Box _box;
 
   String noteListKey = 'note_list_key';
 
   Future<void> init() async {
-    await GetStorage.init();
+    Hive.init((await getApplicationDocumentsDirectory()).path);
+    _box = await Hive.openBox('note_box');
     _noteList = await readNoteList();
   }
 
@@ -34,11 +37,12 @@ class StorageService {
   Future<void> writeNoteList(List<NoteListModel> noteList) async {
     final List<String> encoded =
         noteList.map((e) => jsonEncode(e.toJson())).toList();
-    await _box.write(noteListKey, encoded);
+    await _box.put(noteListKey, encoded);
+    await _box.put(noteListKey, encoded);
   }
 
   Future<List<NoteListModel>> readNoteList() async {
-    final dynamic raw = _box.read(noteListKey);
+    final dynamic raw = _box.get(noteListKey);
     if (raw == null) return [];
     if (raw is List) {
       final List<String> stringList = raw.map((e) => e.toString()).toList();
@@ -92,31 +96,31 @@ class StorageService {
   }
 
   Future<void> write(String key, dynamic value) async {
-    await _box.write(key, value);
+    await _box.put(key, value);
   }
 
   dynamic read(String key) {
-    return _box.read(key);
+    return _box.get(key);
   }
 
   // String helpers with defaults
   Future<void> writeString(String key, String value) async {
-    await _box.write(key, value);
+    await _box.put(key, value);
   }
 
   Future<void> writeStringList(String key, List<String> value) async {
-    await _box.write(key, value);
+    await _box.put(key, value);
   }
 
   String readString(String key, {String defaultValue = ''}) {
-    final dynamic v = _box.read(key);
+    final dynamic v = _box.get(key);
     if (v is String) return v;
     return defaultValue;
   }
 
   List<String> readStringList(String key,
       {List<String> defaultValue = const []}) {
-    final dynamic v = _box.read(key);
+    final dynamic v = _box.get(key);
     if (v is List) {
       return v.map((e) => e.toString()).toList();
     }
@@ -124,11 +128,11 @@ class StorageService {
   }
 
   Future<void> remove(String key) async {
-    await _box.remove(key);
+    await _box.delete(key);
   }
 
   Future<void> clear() async {
-    await _box.erase();
+    await _box.deleteFromDisk();
   }
 
   Future<void> deleteNoteListByPublishDate(int publishDate) async {
